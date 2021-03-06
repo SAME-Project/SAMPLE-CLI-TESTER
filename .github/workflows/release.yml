@@ -12,3 +12,10 @@ jobs:
         uses: skx/github-action-build@master
         with:
           builder: make build
+      - name: Copy artifacts to final location
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: "/tmp/release-artifacts/*"

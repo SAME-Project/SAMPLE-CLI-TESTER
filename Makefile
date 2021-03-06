@@ -23,12 +23,16 @@ export GO = go
 export PYTHON = python3
 export PRECOMMIT = poetry run pre-commit
 
-BUILD_DIR = clitester
+CWD = $(shell pwd)
+BUILD_DIR := CWD
 
 TAG ?= $(eval TAG := $(shell git describe --tags --long --always))$(TAG)
 REPO ?= $(shell echo $$(cd ../${BUILD_DIR} && git config --get remote.origin.url) | sed 's/git@\(.*\):\(.*\).git$$/https:\/\/\1\/\2/')
 BRANCH ?= $(shell cd ../${BUILD_DIR} && git branch | grep '^*' | awk '{print $$2}')
 ARCH = linux
+
+TMPRELEASEDIR = $(shell mktemp -d)
+PACKAGE = $(shell echo "same_$(TAG)_$(ARCH)")
 
 all: build
 
@@ -62,9 +66,13 @@ build-same: fmt vet
 ################################################################################
 .PHONY: build-same-tgz
 build-same-tgz: build-same
-	chmod a+rx ./bin/same
-	rm -f bin/*.tgz
-	cd bin/$(ARCH) && tar -cvzf same_$(TAG)_$(ARCH).tar.gz ./same
+	@echo $(TMPRELEASEDIR)
+	cp bin/$(ARCH)/same $(TMPRELEASEDIR)/same
+    # rm -f bin/*.tgz
+    # cd $(TMPRELEASEDIR) && tar -cvzf same_$(TAG)_$(ARCH).tar.gz ./same
+    # cd cwd
+    # rm -rf $(TMPRELEASEDIR)
+
 
 # push the releases to a GitHub page
 ################################################################################
@@ -109,3 +117,4 @@ test: build-same
 .PHONY: lint
 lint: build-same
 	golangci-lint run
+
