@@ -111,12 +111,7 @@ push-to-github-release: build-same-tgz
 	    --name "same_$(TAG)_$(ARCH).tar.gz" \
 	    --file bin/$(ARCH)/same_$(TAG)_$(ARCH).tar.gz.signature.sha256
 
-# github-release upload \
-#             --user $RELEASE_USER \ 
-#             --repo $RELEASE_REPO \  
-#             --tag $TAG \  
-#             --name "same_$TAG_$ARCH.tar.gz" \ 
-# --file $(TMPARTIFACTDIR)/same_$TAG_$ARCH.tar.gz
+# github-release upload --user $RELEASE_USER --repo $RELEASE_REPO --tag $TAG --name "same_$TAG_$ARCH.tar.gz" --file $TMPARTIFACTDIR/same_$TAG_$ARCH.tar.gz
 
 ################################################################################
 # Target: install                                                              #
