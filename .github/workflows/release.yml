@@ -1,21 +1,31 @@
+name: Publish
+
 on:
-  release:
-    types: [created]
-name: Handle Release
+  push:
+    tags:
+      - "*"
+
 jobs:
-  generate:
-    name: Create release-artifacts
+  build:
+    name: Publish binaries
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@master
-      - name: Generate
-        uses: skx/github-action-build@master
+      - uses: actions/checkout@v2
+      - name: build
+        run: make build-same-tgz
+      - name: Upload binary tarball to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          builder: make build
-      - name: Copy artifacts to final location
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.build.outputs.BINARY_TARBALL }}"
+          asset_name: "Tarball"
+          tag: ${{ github.ref }}
+          overwrite: true
+      - name: Upload binary tarball signature to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          args: "/tmp/release-artifacts/*"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.build.outputs.BINARY_TARBALL_SIGNATURE }}"
+          tag: ${{ github.ref }}
+          overwrite: true
