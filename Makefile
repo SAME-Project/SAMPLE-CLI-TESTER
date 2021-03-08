@@ -76,42 +76,14 @@ build-same-tgz: build-same
 	mkdir $(TMPARTIFACTDIR)/$(PACKAGE)
 	cp bin/$(ARCH)/same $(TMPARTIFACTDIR)/$(PACKAGE)/same
 	cd $(TMPRELEASEWORKINGDIR)
-	openssl dgst -sha256 -sign private.pem -passin pass:$(SAME_PRIVATE_KEY_PASSPHRASE) -out sign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE)/same
-	openssl base64 -in sign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE)/same.signature.sha256
+	openssl dgst -sha256 -sign private.pem -passin pass:$(SAME_PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/sign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE)/same
+	openssl base64 -in $(TMPRELEASEWORKINGDIR)/sign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE)/same.signature.sha256
 	tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz $(TMPARTIFACTDIR)/$(PACKAGE)/
-	openssl dgst -sha256 -sign private.pem -passin pass:$(SAME_PRIVATE_KEY_PASSPHRASE) -out tarsign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz
-	openssl base64 -in tarsign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256
-	cd /
-	# rm -rf $(TMPRELEASEWORKINGDIR)
+	openssl dgst -sha256 -sign private.pem -passin pass:$(SAME_PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/tarsign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz
+	openssl base64 -in $(TMPRELEASEWORKINGDIR)/tarsign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256
+	@echo "::set-output BINARY_TARBALL=$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz"
+	@echo "::set-output BINARY_TARBALL_SIGNATURE=$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256"
 
-
-# push the releases to a GitHub page
-################################################################################
-# Target: push-to-github-release                                               #
-################################################################################
-.PHONY: push-to-github-release
-push-to-github-release: build-same-tgz
-	$(eval TAG=147972b$(newline)ARCH=linux)
-	@echo "Installing github-release-cli..."
-	# sudo npm install --silent --no-progress -g github-release-cli@1.3.1
-	go get github.com/github-release/github-release
-	# Get the list of files
-    echo "Uploading Dapr CLI Binaries to GitHub Release"
-	@echo TAG : $(TAG) ARCH : $(ARCH)
-	github-release upload \
-	    --user $(RELEASE_USER) \
-	    --repo $(RELEASE_REPO) \
-	    --tag $(TAG) \
-	    --name "same_$(TAG)_$(ARCH).tar.gz" \
-	    --file bin/$(ARCH)/same_$(TAG)_$(ARCH).tar.gz
-	github-release upload \
-	    --user $(RELEASE_USER) \
-	    --repo $(RELEASE_REPO) \
-	    --tag $(TAG) \
-	    --name "same_$(TAG)_$(ARCH).tar.gz" \
-	    --file bin/$(ARCH)/same_$(TAG)_$(ARCH).tar.gz.signature.sha256
-
-# github-release upload --user $RELEASE_USER --repo $RELEASE_REPO --tag $TAG --name "same_$TAG_$ARCH.tar.gz" --file $TMPARTIFACTDIR/same_$TAG_$ARCH.tar.gz
 
 ################################################################################
 # Target: install                                                              #
