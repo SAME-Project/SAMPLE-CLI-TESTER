@@ -12,6 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - run: 'echo "$PRIVATE_PEM" > private.pem'
+        shell: bash
+        env:
+          PRIVATE_PEM: ${{secrets.PRIVATE_PEM}}
       - name: build
         run: make build-same-tgz
       - name: Upload binary tarball to release
