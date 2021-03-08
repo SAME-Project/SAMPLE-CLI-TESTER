@@ -81,8 +81,8 @@ build-same-tgz: build-same
 	tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz $(TMPARTIFACTDIR)/$(PACKAGE)/
 	openssl dgst -sha256 -sign private.pem -passin pass:$(PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/tarsign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz
 	openssl base64 -in $(TMPRELEASEWORKINGDIR)/tarsign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256
-	@echo "::set-env name=BINARY_TARBALL::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz"
-	@echo "::set-env name=BINARY_TARBALL_SIGNATURE::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256"
+	@echo "BINARY_TARBALL::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz" >> $(GITHUB_ENV)
+	@echo "BINARY_TARBALL_SIGNATURE::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256" >> $(GITHUB_ENV)
 
 
 ################################################################################
