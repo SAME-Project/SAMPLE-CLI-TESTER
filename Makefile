@@ -26,7 +26,7 @@ export PRECOMMIT = poetry run pre-commit
 CWD = $(shell pwd)
 BUILD_DIR := CWD
 
-TAG ?= $(eval TAG := $(shell git describe --tags --long --always))$(TAG)
+TAG ?= $(eval TAG := $(shell git describe --tags --always))$(TAG)
 REPO ?= $(shell echo $$(cd ../${BUILD_DIR} && git config --get remote.origin.url) | sed 's/git@\(.*\):\(.*\).git$$/https:\/\/\1\/\2/')
 BRANCH ?= $(shell cd ../${BUILD_DIR} && git branch | grep '^*' | awk '{print $$2}')
 ARCH = linux
@@ -81,8 +81,8 @@ build-same-tgz: build-same
 	tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz $(TMPARTIFACTDIR)/$(PACKAGE)/
 	openssl dgst -sha256 -sign private.pem -passin pass:$(PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/tarsign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz
 	openssl base64 -in $(TMPRELEASEWORKINGDIR)/tarsign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256
-	@echo "::set-output BINARY_TARBALL=$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz"
-	@echo "::set-output BINARY_TARBALL_SIGNATURE=$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256"
+	@echo "::set-output name=BINARY_TARBALL::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz"
+	@echo "::set-output name=BINARY_TARBALL_SIGNATURE::$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256"
 
 
 ################################################################################
