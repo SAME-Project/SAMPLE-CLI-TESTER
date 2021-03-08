@@ -27,7 +27,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.BINARY_TARBALL }}
-          asset_name: "Tarball"
+          asset_name: ${{ env.BINARY_TARBALL_NAME }}
           tag: ${{ github.ref }}
           overwrite: true
       - name: Upload binary tarball signature to release
@@ -35,6 +35,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.BINARY_TARBALL_SIGNATURE }}
-          asset_name: "Tarball Signature"
+          asset_name: ${{ env.BINARY_TARBALL_SIGNATURE_NAME }}
           tag: ${{ github.ref }}
           overwrite: true
