@@ -20,6 +20,8 @@ jobs:
         run: make build-same-tgz
         env:
           PRIVATE_KEY_PASSPHRASE: ${{secrets.PRIVATE_KEY_PASSPHRASE}}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Upload binary tarball to release
         uses: svenstaro/upload-release-action@v2
         with:
@@ -33,5 +35,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ steps.build.outputs.BINARY_TARBALL_SIGNATURE }}"
+          asset_name: "Tarball Signature"
           tag: ${{ github.ref }}
           overwrite: true
