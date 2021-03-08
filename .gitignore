@@ -1,3 +1,4 @@
 .vscode/*
 bin/*
 *.pem
+private_key_passphrase

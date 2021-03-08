@@ -18,6 +18,8 @@ jobs:
           PRIVATE_PEM: ${{secrets.PRIVATE_PEM}}
       - name: build
         run: make build-same-tgz
+        env:
+          PRIVATE_KEY_PASSPHRASE: ${{secrets.PRIVATE_KEY_PASSPHRASE}}
       - name: Upload binary tarball to release
         uses: svenstaro/upload-release-action@v2
         with:
