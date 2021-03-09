@@ -71,6 +71,7 @@ build-same: fmt vet
 ################################################################################
 .PHONY: build-same-tgz
 build-same-tgz: build-same
+	@echo "CWD: $(shell pwd)"
 	@echo "RELEASE DIR: $(TMPRELEASEWORKINGDIR)"
 	@echo "ARTIFACT DIR: $(TMPARTIFACTDIR)"
 	mkdir $(TMPARTIFACTDIR)/$(PACKAGE)
@@ -78,7 +79,8 @@ build-same-tgz: build-same
 	cd $(TMPRELEASEWORKINGDIR)
 	openssl dgst -sha256 -sign private.pem -passin pass:$(PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/sign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE)/same
 	openssl base64 -in $(TMPRELEASEWORKINGDIR)/sign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE)/same.signature.sha256
-	tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz $(TMPARTIFACTDIR)/$(PACKAGE)/
+	@echo "tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz -C $(TMPARTIFACTDIR)/$(PACKAGE) $(PACKAGE)"
+	tar cvzf $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz -C $(TMPARTIFACTDIR)/$(PACKAGE) .
 	openssl dgst -sha256 -sign private.pem -passin pass:$(PRIVATE_KEY_PASSPHRASE) -out $(TMPRELEASEWORKINGDIR)/tarsign.sha256 $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz
 	openssl base64 -in $(TMPRELEASEWORKINGDIR)/tarsign.sha256 -out $(TMPARTIFACTDIR)/$(PACKAGE).tar.gz.signature.sha256
 	@echo "BINARY_TARBALL=$(TMPARTIFACTDIR)/$(PACKAGE).tar.gz" >> $(GITHUB_ENV)
