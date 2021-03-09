@@ -33,8 +33,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            same_*
+            ${{ env.BINARY_TARBALL }}
+            ${{ env.BINARY_TARBALL_SIGNATURE }}
           body_path: ${{ github.workflow }}-CHANGELOG.txt
-          repository: SAME-Project/SAMPLE-CLI-TESTER
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: SAME-Project/SAMPLE-CLI-TESTER
