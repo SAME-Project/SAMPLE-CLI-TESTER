@@ -64,7 +64,6 @@ build-same: fmt vet
 	CGO_ENABLED=0 ARCH=linux GOARCH=amd64 ${GO} build -gcflags '-N -l' -ldflags "-X main.VERSION=$(TAG)" -o bin/$(ARCH)/same main.go
 	cp bin/$(ARCH)/same bin/same
 
-# FOR LOCAL TESTING PURPOSES
 # Release tarballs suitable for upload to GitHub release pages
 ################################################################################
 # Target: build-same-tgz                                                       #
