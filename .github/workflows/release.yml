@@ -20,8 +20,8 @@ jobs:
         run: make build-same-tgz
         env:
           PRIVATE_KEY_PASSPHRASE: ${{secrets.PRIVATE_KEY_PASSPHRASE}}
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Upload binary tarball to release
         uses: svenstaro/upload-release-action@v2
         with:
